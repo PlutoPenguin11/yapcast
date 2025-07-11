@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "start:prod": "node --env-file=.env main.js"
+  }
+}

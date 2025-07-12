@@ -1,6 +1,3 @@
-//const ElevenlabsKey = process.env.ElevenlabsKey;
-const ElevenlabsKey = process.env.ElevenlabsTestingKey;
-
 import { GoogleGenAI } from "@google/genai";
 
 

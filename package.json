@@ -1,13 +1,10 @@
 {
-
   "type": "module",
-
   "scripts": {
     "start:prod": "node --env-file=.env main.js"
   },
-
   "dependencies": {
-    "@google/genai": "^1.9.0"
+    "@google/genai": "^1.9.0",
+    "openai": "^5.9.0"
   }
-
 }

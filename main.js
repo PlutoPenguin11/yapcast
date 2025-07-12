@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
-
+import { ElevenLabsClient, play } from '@elevenlabs/elevenlabs-js';
+import 'dotenv/config';
 
 // The client gets the API key from the environment variable `GEMINI_API_KEY`.
 const ai = new GoogleGenAI({});

@@ -1,11 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
-import { ElevenLabsClient, play } from '@elevenlabs/elevenlabs-js';
 import 'dotenv/config';
-
-// The client gets the API key from the environment variable `GEMINI_API_KEY`.
-const ai = new GoogleGenAI({});
-
+import wav from 'wav';
 var message;
+const ai = new GoogleGenAI({});
 
 
 async function speak() {
@@ -16,24 +13,55 @@ const response = await ai.models.generateContent({
 console.log(response.text);
 message = response.text;
 
-const elevenlabs = new ElevenLabsClient();
 
-const audio = await elevenlabs.textToSpeech.convert('JBFqnCBsd6RMkjVDRZzb', {
+async function saveWaveFile(
+   filename,
+   pcmData,
+   channels = 1,
+   rate = 24000,
+   sampleWidth = 2,
+) {
+   return new Promise((resolve, reject) => {
+      const writer = new wav.FileWriter(filename, {
+            channels,
+            sampleRate: rate,
+            bitDepth: sampleWidth * 8,
+      });
 
-  text: message,
+      writer.on('finish', resolve);
+      writer.on('error', reject);
 
-  modelId: 'eleven_multilingual_v2',
+      writer.write(pcmData);
+      writer.end();
+   });
+}
 
-  outputFormat: 'mp3_44100_128',
+async function main() {
+   const ai = new GoogleGenAI({});
 
-});
+   const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-preview-tts",
+      contents: [{ parts: [{ text: message }] }],
+      config: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+               voiceConfig: {
+                  prebuiltVoiceConfig: { voiceName: 'Kore' },
+               },
+            },
+      },
+   });
 
-await play(audio);
+   const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+   const audioBuffer = Buffer.from(data, 'base64');
 
+   const fileName = 'out.wav';
+   await saveWaveFile(fileName, audioBuffer);
+}
+await main();
 
 }
 
 speak();
 
 console.log(message);
-

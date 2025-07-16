@@ -46,7 +46,7 @@ async function main() {
             responseModalities: ['AUDIO'],
             speechConfig: {
                voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName: 'Kore' },
+                  prebuiltVoiceConfig: { voiceName: 'Umbriel' },
                },
             },
       },

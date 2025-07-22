@@ -1,67 +1,94 @@
 import { GoogleGenAI } from "@google/genai";
 import 'dotenv/config';
-import wav from 'wav';
-var message;
 const ai = new GoogleGenAI({});
 
+import wav from 'wav';
 
-async function speak() {
-const response = await ai.models.generateContent({
+
+
+async function generateText() {
+  const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: "Give me one sentence descibing a slimey yellow chair",
-});
-console.log(response.text);
-message = response.text;
+    contents: "Give me one sentence of an indroduction someone might give as an icebreaker"
+  })
+  return response.text;
+}
 
+async function generateSpeech(text) {
+      const ai = new GoogleGenAI({});
 
-async function saveWaveFile(
-   filename,
-   pcmData,
-   channels = 1,
-   rate = 24000,
-   sampleWidth = 2,
-) {
-   return new Promise((resolve, reject) => {
-      const writer = new wav.FileWriter(filename, {
-            channels,
-            sampleRate: rate,
-            bitDepth: sampleWidth * 8,
+      let message = `Say in a conversational tone:
+      ${text}`
+
+      const response = await ai.models.generateContent({
+         model: "gemini-2.5-flash-preview-tts",
+         contents: [{ parts: [{ text: message }] }],
+         config: {
+               responseModalities: ['AUDIO'],
+               speechConfig: {
+                  voiceConfig: {
+                     prebuiltVoiceConfig: { voiceName: 'Umbriel' },
+                     /*
+                     Voices:
+                     1) Umbriel
+                     2) Erinome
+                     3) Achird
+                     */
+                  },
+               },
+         },
       });
 
-      writer.on('finish', resolve);
-      writer.on('error', reject);
+   async function saveWaveFile(
+      filename,
+      pcmData,
+      channels = 1,
+      rate = 24000,
+      sampleWidth = 2,
+   ) {
+      return new Promise((resolve, reject) => {
+         const writer = new wav.FileWriter(filename, {
+               channels,
+               sampleRate: rate,
+               bitDepth: sampleWidth * 8,
+         });
 
-      writer.write(pcmData);
-      writer.end();
-   });
-}
+         writer.on('finish', resolve);
+         writer.on('error', reject);
 
-async function main() {
-   const ai = new GoogleGenAI({});
+         writer.write(pcmData);
+         writer.end();
+      });
+   }
 
-   const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: message }] }],
-      config: {
-            responseModalities: ['AUDIO'],
-            speechConfig: {
-               voiceConfig: {
-                  prebuiltVoiceConfig: { voiceName: 'Umbriel' },
-               },
-            },
+      const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      const audioBuffer = Buffer.from(data, 'base64');
+
+
+      const fileName = 'out.wav';
+      await saveWaveFile(fileName, audioBuffer);
+};
+
+generateText().then(
+      function(value) {
+         console.log(value);
+         generateSpeech(value);
       },
-   });
+      
+      function(error) { 
+         // code if some error
+      }
+);
 
-   const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-   const audioBuffer = Buffer.from(data, 'base64');
+generateSpeech().then(
+   function(value) {
+      console.log("complete");
+   },
+   function(error) { 
+      // code if some error
+   }
+);
+     
+console.log("Promise has been created and handlers attached. Waiting for settlement...");
 
-   const fileName = 'out.wav';
-   await saveWaveFile(fileName, audioBuffer);
-}
-await main();
 
-}
-
-speak();
-
-console.log(message);

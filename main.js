@@ -3,7 +3,7 @@ import 'dotenv/config';
 const ai = new GoogleGenAI({});
 
 import wav from 'wav';
-
+import ffmpeg from 'fluent-ffmpeg';
 
 
 async function generateText() {
@@ -67,6 +67,8 @@ async function generateSpeech(text) {
 
       const fileName = 'out.wav';
       await saveWaveFile(fileName, audioBuffer);
+      const audio = new Audio('out.wav');
+      audio.play();
 };
 
 

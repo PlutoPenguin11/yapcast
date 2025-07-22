@@ -69,26 +69,29 @@ async function generateSpeech(text) {
       await saveWaveFile(fileName, audioBuffer);
 };
 
-generateText().then(
+
+async function generateResponse() {
+   await generateText().then(
+         function(value) {
+            console.log(value);
+            generateSpeech(value);
+         },
+         
+         function(error) { 
+            // code if some error
+         }
+   );
+
+   await generateSpeech().then(
       function(value) {
          console.log(value);
-         generateSpeech(value);
       },
-      
       function(error) { 
          // code if some error
       }
-);
+   );
+}
 
-generateSpeech().then(
-   function(value) {
-      console.log("complete");
-   },
-   function(error) { 
-      // code if some error
-   }
-);
-     
+generateResponse()
+
 console.log("Promise has been created and handlers attached. Waiting for settlement...");
-
-

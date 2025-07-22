@@ -1,9 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 import 'dotenv/config';
 const ai = new GoogleGenAI({});
-
+import Speaker from 'speaker';
 import wav from 'wav';
-import ffmpeg from 'fluent-ffmpeg';
 
 
 async function generateText() {

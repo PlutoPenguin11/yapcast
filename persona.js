@@ -10,7 +10,7 @@ export class Persona {
   async generateResponse(previousMessage, previousName) {
     let text = '', voice = '';
     let prompt = 
-    `Please generate a short response as though you're a podcast host named ${this.voice}.
+    `Please generate a short response as though you're a podcast host named ${this.name}.
     Your personality is: 
     ${this.personality}
     You are responding to your cohost named ${previousName} who just said: 

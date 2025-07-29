@@ -1,8 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
 import 'dotenv/config';
 const ai = new GoogleGenAI({});
+
 import wav from 'wav';
-import Readable from 'stream';
+
+import { Buffer } from 'buffer';
+import Speaker from 'speaker';
 
 let prompt = 'Give me one sentence of an indroduction someone might give as an icebreaker';
 
@@ -14,7 +17,7 @@ export async function generateText(prompt) {
   return response.text;
 }
 
-export async function generateVoice(text, name) {
+export async function generateVoice(text, voiceName) {
       const ai = new GoogleGenAI({});
 
       let message = `Say in a casual, natural tone like you're in a chill podcast:
@@ -27,7 +30,7 @@ export async function generateVoice(text, name) {
                responseModalities: ['AUDIO'],
                speechConfig: {
                   voiceConfig: {
-                     prebuiltVoiceConfig: { voiceName: name },
+                     prebuiltVoiceConfig: { voiceName: voiceName },
                   },
                },
          },

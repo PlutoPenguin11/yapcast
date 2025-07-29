@@ -18,7 +18,6 @@ export class Persona {
 
   try {
       const generatedText = await generateText(prompt);
-      console.log(generatedText);
       text = generatedText;
       const generatedVoice = await generateVoice(generatedText, this.voice);
       voice = generatedVoice;

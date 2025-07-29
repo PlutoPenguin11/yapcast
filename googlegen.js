@@ -16,6 +16,7 @@ export async function generateText(prompt) {
 export async function generateVoice(text, name) {
    const ai = new GoogleGenAI({});
 
+   const message = `Say in a casual, natural tone like you're in a chill podcast:
    ${text}`;
 
    const response = await ai.models.generateContent({

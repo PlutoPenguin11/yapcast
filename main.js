@@ -13,8 +13,6 @@ async function convo() {
     queue.push(audio);
     [prompt, audio] = await rachel.generateResponse(prompt, greg.name);
     queue.push(audio);
-    //[prompt, audio] = rachel.generateResponse(prompt, greg.name);
-    //[prompt, audio] = greg.generateResponse(prompt, rachel.name);
     console.log(queue.length);
 
     while(queue.length > 0) {

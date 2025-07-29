@@ -14,25 +14,13 @@ export class Persona {
     You are responding to your cohost named ${previousName} who just said: 
     ${previousMessage}`;
 
-    await generateText(prompt).then(
-      function(value) {
-        console.log(value);
-        generateVoice(value);
-      },
-              
-      function(error) { 
-        // code if some error
-      }
-    );
-
-    await generateVoice().then(
-      function(value) {
-        console.log(value);
-      },
-      function(error) { 
-        // code if some error
-      }
-    );
+  try {
+      const value = await generateText(prompt);
+      console.log(value);
+      generateVoice(value, this.name);
+    } catch (error) {
+      console.error("Error generating text:", error);
+    }
   }
 
 }

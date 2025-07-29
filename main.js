@@ -1,5 +1,11 @@
 import { Persona } from "./persona.js";
 
+/*
+Voices:
+1) Umbriel
+2) Erinome
+3) Achird
+*/
 
 const queue = [];
 

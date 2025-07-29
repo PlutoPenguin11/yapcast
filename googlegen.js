@@ -14,7 +14,7 @@ export async function generateText(prompt) {
   return response.text;
 }
 
-export async function generateVoice(text) {
+export async function generateVoice(text, name) {
       const ai = new GoogleGenAI({});
 
       let message = `Say in a casual, natural tone like you're in a chill podcast:
@@ -27,13 +27,7 @@ export async function generateVoice(text) {
                responseModalities: ['AUDIO'],
                speechConfig: {
                   voiceConfig: {
-                     prebuiltVoiceConfig: { voiceName: 'Umbriel' },
-                     /*
-                     Voices:
-                     1) Umbriel
-                     2) Erinome
-                     3) Achird
-                     */
+                     prebuiltVoiceConfig: { voiceName: name },
                   },
                },
          },

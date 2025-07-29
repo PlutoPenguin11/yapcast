@@ -8,6 +8,7 @@ export class Persona {
   }
 
   async generateResponse(previousMessage, previousName) {
+    let text = '', voice = '';
     let prompt = 
     `Please generate a short response as though you're a podcast host named ${this.voice}.
     Your personality is: 
@@ -16,12 +17,16 @@ export class Persona {
     ${previousMessage}`;
 
   try {
-      const value = await generateText(prompt);
-      console.log(value);
-      generateVoice(value, this.voice);
+      const generatedText = await generateText(prompt);
+      console.log(generatedText);
+      text = generatedText;
+      const generatedVoice = await generateVoice(generatedText, this.voice);
+      voice = generatedVoice;
     } catch (error) {
       console.error("Error generating text:", error);
     }
+
+    return [text, voice];
   }
 
 }

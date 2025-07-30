@@ -7,16 +7,13 @@ const MAX_BUFFER_SIZE = 6;
 const MAX_RESPONSES = 10;
 let responseCount = 0;
 
-const greg = new Persona('Greg', 'Umbriel', 'Laid-back and knowledgeable');
-const rachel = new Persona('Rachel', 'Erinome', 'Engaged and friendly');
-const john = new Persona('John', 'Achird', 'Supportive and thoughtful');
+const greg = new Persona('Greg', 'Umbriel', 'Laid-back and thoughtful');
+const rachel = new Persona('Rachel', 'Erinome', 'Engaged and knowledgeable');
+const john = new Persona('John', 'Achird', 'Supportive and friendly');
 
 const speakers = [greg, rachel];
 let lastSpeaker = null;
 let prompt = `Any cool new restaurants you've been to lately?`;
-
-
-
 
 async function main() {
   await Promise.all([producer(), consumer()]);
@@ -28,17 +25,9 @@ async function producer() {
       const speaker = getNextSpeaker(lastSpeaker);
       const previousName = lastSpeaker?.name || "a guest";
 
-      // Customize the prompt if we're near the end
       let thisPrompt = prompt;
-      if (responseCount === MAX_RESPONSES - 2) {
-        thisPrompt = `${prompt}
-        We're almost out of time — anything you'd like to share before we wrap up?`;
-      } else if (responseCount === MAX_RESPONSES - 1) {
-        thisPrompt = `${prompt}
-        Last thoughts before we go?`;
-      }
 
-      const [text, audio] = await speaker.generateResponse(thisPrompt, previousName);
+      const [text, audio] = await speaker.generateResponse(thisPrompt, previousName, MAX_RESPONSES - responseCount);
 
       if (audio) {
         queue.push(audio);

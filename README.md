@@ -1,8 +1,8 @@
 Make sure ffmpeg is installed
 
 In google cloud's API Library, enable the following apis:
-Generative Language API
-Cloud Text-to-Speech API
+- Generative Language API
+- Cloud Text-to-Speech API
 And create a key with both enabled.
 
 Once you have your api key, either:

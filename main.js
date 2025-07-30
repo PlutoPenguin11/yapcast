@@ -4,14 +4,15 @@ import { Readable } from 'stream';
 
 const queue = [];
 const MAX_BUFFER_SIZE = 6;
-const MAX_RESPONSES = 10;
+const MAX_RESPONSES = 10; // Pick a number above 4
 let responseCount = 0;
 
+// Personality definitions. (Name in podcast, Voice selector for Google TTS, Text description of personality)
 const greg = new Persona('Greg', 'Umbriel', 'Laid-back and thoughtful');
 const rachel = new Persona('Rachel', 'Erinome', 'Engaged and knowledgeable');
 const john = new Persona('John', 'Achird', 'Supportive and friendly');
 
-const speakers = [greg, rachel];
+const podcasters = [greg, rachel]; // Adds personas to actual podcast. Only use 2 here so introductions make sense.
 let lastSpeaker = null;
 let prompt = `Any cool new restaurants you've been to lately?`;
 
@@ -23,12 +24,19 @@ async function producer() {
   while (responseCount < MAX_RESPONSES) {
     if (queue.length < MAX_BUFFER_SIZE) {
       const speaker = getNextSpeaker(lastSpeaker);
-      const previousName = lastSpeaker?.name || "a guest";
+
+      // Will work best with 2 Personas in podcasters
+      // With more than 2, AI will introduce with the first 2 Personas
+      const previousName = lastSpeaker ? lastSpeaker.name
+        : podcasters.find(p => p !== speaker)?.name || "a guest";
 
       let thisPrompt = prompt;
+      let responsesLeft = (responseCount != 0) ? MAX_RESPONSES - responseCount : -1; // Sets first message's value to -1 for prompting purposes in persona.js
 
-      const [text, audio] = await speaker.generateResponse(thisPrompt, previousName, MAX_RESPONSES - responseCount);
+      // Performs API calls
+      const [text, audio] = await speaker.generateResponse(thisPrompt, previousName, responsesLeft);
 
+      // Adds audio clip to queue
       if (audio) {
         queue.push(audio);
         prompt = text;
@@ -45,16 +53,18 @@ async function producer() {
 }
 
 function getNextSpeaker(previous) {
-  if (!previous) return speakers[0];
-  const index = speakers.indexOf(previous);
-  return speakers[(index + 1) % speakers.length];
+  if (!previous) return podcasters[0]; // Returns first element if it's the first call
+  const index = podcasters.indexOf(previous);
+  return podcasters[(index + 1) % podcasters.length]; // Otherwise, returns next element in array
 }
 
 async function consumer() {
+  // Wait for queue to reach a minimum quantity at start as a buffer
   while (queue.length < 4) {
     await delay(100);
   }
 
+  // Plays each audio clip from queue[] sequentially
   while (true) {
     if (queue.length > 0) {
       await playNext();

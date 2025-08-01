@@ -7,7 +7,7 @@ export class Persona {
     this.personality = personality; // Text description of personality for text generation
   }
 
-  async generateResponse(previousMessage, previousName, promptsLeft) {
+  async generateResponse(previousMessage, previousName, promptsLeft, originalTopic) {
     let text = '', voice = '', prompt = '';
 
     switch (promptsLeft) {
@@ -24,7 +24,9 @@ export class Persona {
         prompt = `Please generate a short response as though you're a podcast host named ${this.name}.
         You've just check the clock, and you're out of time, so you need to address what your cohost just said and get ready to sign off.
         Your cohost named ${previousName} just said: 
-        ${previousMessage}`;
+        ${previousMessage}
+        Make sure to close off the conversation about today's topic:
+        ${originalTopic}`;
         break;
       case 1: // Last message
         prompt = `Please generate a short response as though you're a podcast host named ${this.name}.
@@ -37,7 +39,9 @@ export class Persona {
         Your personality is: 
         ${this.personality}
         You are responding to your cohost named ${previousName} who just said: 
-        ${previousMessage}`;
+        ${previousMessage}
+        The topic for today is:
+        ${originalTopic}`;
         break;
     }
 

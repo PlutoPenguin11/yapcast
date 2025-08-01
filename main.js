@@ -16,7 +16,8 @@ const john = new Persona('John', 'Achird', 'Supportive and friendly');
 
 const podcasters = [greg, rachel]; // Adds personas to actual podcast. Only use 2 here so introductions make sense.
 let lastSpeaker = null;
-let prompt = `Artificial Intelligence taking our jobs`; // This should be worded like a topic, not a full prompt. It's added to a full prompt later.
+let originalTopic = `Artificial Intelligence taking our jobs`; // This should be worded like a topic, not a full prompt. It's added to a full prompt later.
+let prompt = originalTopic;
 
 async function main() {
   if (!process.env.GEMINI_API_KEY) {
@@ -58,7 +59,7 @@ async function producer() {
 
       try {
         // Performs API calls
-        const [text, audio] = await speaker.generateResponse(thisPrompt, previousName, responsesLeft);
+        const [text, audio] = await speaker.generateResponse(thisPrompt, previousName, responsesLeft, originalTopic);
         // Adds audio to buffer/queue
         if (audio) {
           queue.push(audio);
